@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+</head>
+
+<body>
+  <header>
+    <a href="trangchu1.html">
+      <img src="../Picture/logo1.png" alt="">
+    </a>
+    <p class="hotline">HOTLINE: <span style="color: red;">1900 6422</span></p>
+  </header>
+  <main>
+    <div class="container">
+      <!-- Nút đăng nhập, đăng ký -->
+      <div class="auth">
+        <div class="auth-content">
+          <a class="signup" id="headerRegister" href="javascript:void(0)">Đăng ký</a>|
+          <a class="login" id="headerLogin" href="javascript:void(0)">Đăng nhập</a>
+        </div>
+      </div>
+
+      <div class="intro">
+        <h1>Đặt lịch và xem kết quả khám online</h1>
+        <h2>Giờ đây bạn có thể đặt lịch trước khi tới khám và xem được kết quả khám online nhanh chóng mọi lúc mọi nơi
+        </h2>
+      </div>
+      <div class="features">
+        <a id="btnDatLich" href="javascript:void(0)">
+          <div class="feature-box">
+            <img src="../Picture/doctor.png" alt="calendar">
+            <div>
+              <h3>Đặt lịch khám</h3>
+              <p>Đặt lịch khám online trước khi tới viện</p>
+            </div>
+          </div>
+        </a>
+        <a id="btnHoSo" href="javascript:void(0)">
+          <div class="feature-box">
+            <img src="../Picture/file.png" alt="record">
+            <div>
+              <h3>Hồ sơ y tế</h3>
+              <p>Xem và lưu trữ kết quả khám</p>
+            </div>
+          </div>
+        </a>
+        <div class="illustration">
+          <img src="../Picture/Screenshot 2025-10-05 160850.png" alt="Doctors">
+        </div>
+      </div>
+
+
+    </div>
+
+    </div>
+
+    </div>
+
+    </div>
+  </main>
+  <footer>
+    <div class="logo">
+      <img src="../Picture/logo2.png" alt="">
+    </div>
+    <div class="location">
+      <p style="font-weight: bold;font-size: 18px;">BỆNH VIỆN ĐA KHOA QUỐC TẾ ICARE</p>
+      <div class="location-content">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+        <p>Cơ sở Tôn Thất Tùng: <span>Số 1 Tôn Thất Tùng, Phường Trung Tự, Quận Đống Đa, Hà Nội</span></p>
+      </div>
+      <div class="location-content">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+        <p>Cơ sở Cầu Giấy: <span>Số 10 Trương Công Giai, Cầu Giấy, Hà Nội</span></p>
+      </div>
+      <div class="location-content">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+        <p>Cơ sở Hoàng Mai: <span>Số 587, Tam Trinh, Yên Sở, Hoàng Mai, Hà Nội</span></p>
+      </div>
+      <div class="location-content">
+        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        <p>Email: <span>icare@hospital.vn</span></p>
+      </div>
+      <div class="location-content">
+        <i class="fa-solid fa-phone" aria-hidden="true"></i>
+        <p>Tổng đài: <span>1900 6422</span></p>
+      </div>
+    </div>
+  </footer>
+
+<!-- Nút chatbot -->
+  <button id="chatBtn"> <img src="../Picture/icon.png" alt="Chat"> <span>Chat với ICare</span> </button>
+  <!-- Hộp chat -->
+  <div id="chatWindow">
+    <div class="chat-header">
+      <img src="../Picture/icon.png" alt=""><span>ICare Assitant</span> <span id="closeChat">&times;</span>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="chat-message bot">Xin chào! Tôi là trợ lý ICare 🤖</div>
+    </div>
+    <div class="chat-input"> <input type="text" id="userInput" placeholder="Nhập tin nhắn..."> <button
+        id="sendBtn">Gửi</button> </div>
+  </div>
+
+
+<div class="auth-modal login-form" id="loginModal" style="display: none;">
+  <div class="modal">
+    <div class="left-panel">ĐĂNG NHẬP</div>
+    <div class="right-panel">
+      <span class="close-btn" id="closeLogin">✖</span>
+      <h2 style="margin-bottom:6px">Đăng nhập</h2>
+      
+      <div id="loginError" class="error" style="display:none;"></div> 
+      
+      <form id="formLogin">
+        <label for="log_phone">Số điện thoại </label>
+        <input id="log_phone" type="text" inputmode="numeric" pattern="[0-9]*" class="required-input" />
+        
+        <div id="log_phoneError" class="error" style="display:none;"></div> 
+        
+        <label for="log_pass">Mật khẩu</label>
+        <input id="log_pass" type="password" autocomplete="current-password" class="required-input" />
+
+        <button type="button" id="loginBtn" class="btn primary" disabled>ĐĂNG NHẬP</button>
+      </form>
+      <div class="switch">Bạn chưa có tài khoản? <a id="toRegister">Đăng ký</a></div>
+    </div>
+  </div>
+</div>
+
+  <div class="auth-modal signup-form" id="registerModal" style="display: none;">
+    <div class="modal">
+      <div class="left-panel">ĐĂNG KÝ</div>
+      <div class="right-panel">
+        <span class="close-btn" id="closeRegister">✖</span>
+        <h2 style="margin-bottom:6px">Tạo tài khoản</h2>
+
+        <form id="formRegister">
+          <label for="reg_name">Họ tên </label>
+          <input id="reg_name" type="text" autocomplete="name" class="required-input" />
+
+          <label for="reg_phone">Số điện thoại </label>
+          <input id="reg_phone" type="text" inputmode="numeric" pattern="[0-9]*" class="required-input" />
+          <div id="registerError" class="error"></div>
+
+          <label for="reg_pass">Mật khẩu </label>
+          <input id="reg_pass" type="password" autocomplete="new-password" class="required-input" />
+
+          <label for="reg_repass">Xác nhận mật khẩu</label>
+          <input id="reg_repass" type="password" autocomplete="new-password" class="required-input" />
+          <div id="reg_passErr" class="error"></div>
+
+          <button type="button" id="registerBtn" class="btn primary" disabled>ĐĂNG KÝ</button>
+        </form>
+
+        <div class="switch">Bạn đã có tài khoản? <a id="toLogin">Đăng nhập</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script1.js"></script>
+
+
+</body>
+
+</html>

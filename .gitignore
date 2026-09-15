@@ -1,0 +1,10 @@
+node_modules/
+.venv/
+__pycache__/
+.env
+*.log
+.DS_Store
+docx_render/
+pdf_pages/
+vector_db/
+*.psd

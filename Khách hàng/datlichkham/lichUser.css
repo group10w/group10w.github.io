@@ -1,0 +1,93 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: rgb(8, 8, 81);
+    color: #fff;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+header h1:hover{
+    color: orange;
+}
+header a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border: 2px solid #fff;
+    padding: 8px 18px;
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+
+header a:hover {
+    background-color: #fff;
+    color: #0d6efd;
+}
+
+main {
+    padding: 20px 40px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+thead {
+    background-color: rgb(158, 125, 64);
+    color: #fff;
+}
+
+thead th {
+    padding: 12px 15px;
+    text-align: center;
+}
+
+tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+button.huy {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+button.huy:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
