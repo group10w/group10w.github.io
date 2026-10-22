@@ -1,0 +1,877 @@
+/* ================== CẤU TRÚC CHUNG ================== */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f5f5f5; /* Nền xám nhạt giống ảnh */
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+header {
+    background-color: #fff;
+    border-bottom: 1px solid #e8e8e8; /* Viền mỏng dưới header */
+    height: 120px;
+    display: flex;
+    align-items: center;
+}
+
+/* ... (Giữ nguyên CSS cho header/footer cũ của bạn nếu cần) ... */
+header a img { width: 300px; height: 70px; margin-left: 50px; }
+.hotline { margin-left: auto; font-size: 20px; font-weight: bold; margin-right: 60px; }
+
+/* ================== CONTAINER CHÍNH ================== */
+.container {
+    width: 1200px;
+    margin: 20px auto;
+    display: flex; /* Flexbox để chia cột */
+    padding-bottom: 50px;
+}
+
+/* ================== CỘT TRÁI (SIDEBAR) ================== */
+.account-left {
+    width: 180px;
+    flex-shrink: 0;
+    margin-right: 27px;
+}
+
+/* Phần Avatar và Tên */
+.user-menu-content {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #efefef;
+    margin-bottom: 10px;
+}
+
+.user-menu-content .avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #e1e1e1; /* Màu xám cho avatar chưa có ảnh */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-right: 10px;
+    border: 1px solid rgba(0,0,0,.09);
+}
+
+.user-info-btn {
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    padding: 0;
+    text-align: left;
+    cursor: default;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Menu điều hướng */
+.side-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Mục chính (VD: Tài khoản của tôi) */
+.nav-section {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 5px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+.nav-section i {
+    width: 20px;
+    text-align: center;
+    margin-right: 10px;
+    color: #0a6cb5; /* Icon màu xanh */
+    font-size: 16px;
+}
+
+/* Mục con (VD: Hồ sơ, Đổi mật khẩu) */
+.side-nav ul ul {
+    padding-left: 30px; /* Thụt đầu dòng */
+}
+
+.side-nav a {
+    text-decoration: none;
+    color: rgba(0,0,0,.87);
+    display: block;
+    padding: 5px 0;
+    font-size: 14px;
+    transition: color 0.1s;
+}
+
+.side-nav a:hover {
+    color: #0a6cb5;
+}
+
+/* Mục đang active (Màu đỏ) */
+.side-nav .nav-item.active {
+    color: #ee4d2d; /* Màu đỏ cam giống Shopee/Ảnh mẫu */
+    font-weight: 500;
+}
+
+/* ================== CỘT PHẢI (NỘI DUNG CHÍNH) ================== */
+.account-right {
+    flex-grow: 1;
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.13); /* Đổ bóng nhẹ */
+    border-radius: 2px;
+    padding: 0 30px 30px; /* Padding nội dung */
+    min-height: 500px;
+    position: relative;
+}
+
+
+
+
+/* Form thông tin */
+#profileForm {
+    padding-left: 20px; /* Căn lề cho form đẹp hơn */
+}
+
+.info-row {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 30px; /* Khoảng cách giữa các dòng */
+    min-height: 30px;
+}
+
+/* Cột nhãn (Họ tên, SĐT...) */
+.info-row label {
+    width: 20%; /* Chiếm 20% chiều rộng */
+    text-align: right;
+    color: rgba(85,85,85,.8); /* Màu chữ xám nhạt */
+    margin-right: 20px; /* Khoảng cách với nội dung */
+    font-size: 14px;
+}
+
+/* Cột giá trị / Input */
+.info-display, .info-input {
+    color: #333;
+    font-size: 14px;
+    flex-grow: 1;
+    max-width: 400px; /* Giới hạn chiều rộng input */
+}
+
+.info-input {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.info-input:focus {
+    border-color: #777;
+}
+
+.info-input[disabled] {
+    background-color: #f5f5f5;
+    color: #999;
+    border: none; /* Input disabled trông như text thường nhưng có nền xám */
+}
+
+/* Link thay đổi */
+.btn-change {
+    border: none;
+    background: none;
+    color: #05a; /* Màu xanh link */
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 15px;
+    font-size: 13px;
+}
+
+/* Radio buttons (Giới tính) */
+.gender-group {
+    display: flex;
+    gap: 15px;
+}
+
+.gender-group label {
+    width: auto !important; /* Reset width của label trong radio group */
+    text-align: left;
+    margin-right: 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.gender-group input {
+    margin-right: 8px;
+}
+
+/* Khu vực nút Lưu */
+#profile-section .save-area {
+    margin-top: 40px;
+    margin-left: 20%; /* Căn thẳng với cột input */
+    padding-left: 20px;
+}
+
+.btn.primary {
+    background-color: #0a6cb5; /* Màu xanh chủ đạo */
+    color: #fff;
+    height: 40px;
+    padding: 0 20px;
+    min-width: 70px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.09);
+    transition: background-color 0.2s;
+}
+
+.btn.primary:hover {
+    background-color: #095c9b;
+}
+
+.btn.primary.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.btn.secondary {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    color: #555;
+    height: 40px;
+    padding: 0 20px;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* Tiện ích */
+.hidden { display: none !important; }
+.not-available { color: #bbb; font-style: italic; }
+.content-section { display: none; }
+.content-section.active { display: block; }
+
+/* ================== CUSTOM TOAST NOTIFICATION ================== */
+#customToast {
+    visibility: hidden; /* Mặc định ẩn */
+    min-width: 200px;
+    background-color: rgba(0, 0, 0, 0.75); /* Nền đen mờ */
+    color: #fff; /* Chữ trắng */
+    text-align: center;
+    border-radius: 10px; /* Bo góc */
+    padding: 20px 30px;
+    position: fixed; /* Cố định vị trí */
+    z-index: 9999; /* Luôn nổi lên trên cùng */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* Căn chính giữa màn hình */
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Hiện thông báo */
+#customToast.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Vòng tròn chứa icon check */
+.toast-icon {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+/* Icon check màu đen */
+.toast-icon i {
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Dòng chữ thông báo */
+.toast-message {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: Arial, sans-serif;
+}
+/* Nút Lưu / Hủy khi active */
+#saveProfileBtn.active {
+    background-color: #095c9b !important; /* xanh lá */
+    color: #fff;
+    cursor: pointer !important;
+    opacity: 1 !important;
+}
+
+#cancelEditBtn.active {
+    display: inline-block !important; /* bỏ hidden */
+    cursor: pointer;
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.content-section h2 {
+
+    font-size: 18px;         /* Cỡ chữ đồng nhất */
+    font-weight: 600;
+    color: #333;
+    margin-top: 20px;        /* Khoảng cách với đầu section */
+    margin-bottom: 5px;      /* Khoảng cách với security-note */
+}
+
+.content-section .security-note {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;     /* Khoảng cách với line */
+}
+
+.content-section .dim-line {
+    border: 0;
+    height: 1px;
+    background: #efefef;
+    margin: 0 0 30px 0;      /* Cách dưới 30px, trên 0 */
+}
+/* ===== Form đổi mật khẩu căn giữa ===== */
+#password-section form {
+    max-width: 400px;      /* Giới hạn chiều rộng form */
+    margin: 0 auto;         /* Căn giữa form */
+    padding: 20px;
+    background-color: #fff;
+
+}
+
+/* Các input mật khẩu */
+.pass-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    position: relative; /* để đặt nút show/hide */
+}
+
+.pass-row label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.pass-row input {
+    padding: 10px 40px 10px 10px; /* chừa chỗ cho nút show/hide */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Nút ẩn/hiện mật khẩu */
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #0a6cb5;
+}
+
+/* Khu vực nút Lưu / Hủy căn giữa */
+#password-section .save-area {
+    display: flex;
+    justify-content: center; /* căn giữa */
+    gap: 10px; /* khoảng cách giữa hai nút */
+    margin-top: 30px;
+
+
+}
+
+/* Reset nút disabled */
+#savePasswordBtn.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+/* Error message */
+.pass-row .error {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 5px;
+    min-height: 18px; /* để không nhảy layout */
+}
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding-right: 30px; /* chừa chỗ cho icon */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 8px;
+    cursor: pointer;
+    color: #555;
+    font-size: 16px;
+}
+#cancelPasswordBtn.active {
+    display: inline-block !important; /* bỏ hidden */
+    cursor: pointer;
+    background-color: #dc3545;
+    color: #fff;
+}
+
+
+/* Container chính cho khu vực Hồ sơ y tế */
+.medical-record-container {
+display: flex;
+ gap: 20px; /* Khoảng cách giữa bảng và chi tiết */
+ min-height: 400px; /* Đảm bảo đủ chiều cao */
+}
+
+/* Phần danh sách lịch sử khám bệnh (bên trái) */
+.medical-record-list {
+ flex: 3; /* Chiếm 1 phần không gian */
+ display: flex;
+ flex-direction: column;
+}
+
+/* Phần chi tiết kết quả khám (bên phải) */
+.medical-record-detail {
+    flex: 1;
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    /* 1. Loại bỏ flexbox và dùng text-align để căn giữa khối bên trong */
+    display: block; 
+    text-align: center; /* Căn giữa block nội dung bên trong */
+
+}
+
+.detail-placeholder {
+    color: #888;
+    font-style: italic;
+    margin-top: 0;
+    /* Đảm bảo placeholder vẫn là block để căn giữa bởi text-align: center của parent */
+    display: block; 
+}
+/* 2. Style cho nội dung chi tiết được chèn vào */
+#active-medical-detail {
+    display: inline-block; /* Quan trọng: Để có thể được căn giữa bởi text-align: center của parent */
+    text-align: left; /* Đảm bảo các dòng text bên trong nội dung chi tiết được căn trái */
+    padding: 15px;
+    margin-top: 15px;
+    border-top: 1px solid #ccc;
+    width: 100%; /* Đảm bảo nội dung chiếm hết chiều rộng của block cha đã được căn giữa */
+    box-sizing: border-box; /* Tính cả padding/border vào width */
+}
+/* Style cho các thành phần bên trong chi tiết */
+#active-medical-detail h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #337ab7;
+}
+#active-medical-detail p {
+    margin: 5px 0;
+}
+/* Nút sắp xếp */
+.sort-options {
+ position: relative;
+ align-self: flex-end; /* Đẩy nút sang phải */
+ margin-bottom: 10px;
+}
+
+.sort-options button {
+ background-color: #fff;
+ border: 1px solid #ccc;
+ padding: 5px 10px;
+ cursor: pointer;
+}
+
+.sort-menu {
+ position: absolute;
+ top: 100%; /* Đặt dưới nút */
+ right: 0;
+ z-index: 10;
+  background-color: #fff;
+ border: 1px solid #ccc;
+ box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+ min-width: 150px;
+}
+
+.sort-menu a {
+ display: block;
+ padding: 8px 15px;
+ text-decoration: none; color: #333;
+ font-size: 14px;
+}
+
+.sort-menu a:hover {
+ background-color: #f0f0f0;
+}
+
+/* Bảng */
+.medical-history-table {
+ width: 100%;
+ border-collapse: collapse;
+ table-layout: fixed; /* Giúp kiểm soát độ rộng cột */
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+ background-color: #fff;
+}
+
+.medical-history-table th,
+.medical-history-table td {
+ border: 1px solid #ccc;
+ padding: 10px;
+ text-align: left;
+ font-size: 14px;
+}
+
+.medical-history-table th {
+ background-color: #337ab7; /* Màu xanh nổi bật cho header */
+ color: white;
+ font-weight: bold;
+ border-color: #337ab7;
+}
+
+.medical-history-table tbody tr:nth-child(even) {
+ background-color: #f4f4f4; /* Xen kẽ màu nền cho hàng */
+}
+
+.medical-history-table tbody tr:hover {
+ background-color: #e0f7fa; /* Hiệu ứng hover */
+ cursor: pointer;
+}
+.medical-history-table tr.selected {
+    background-color: #f0f8ff;
+}
+
+
+/* ================== APPOINTMENTS - CARD & HEADER TABS ================== */
+#appointments-section {
+    padding: 22px 24px;
+}
+
+.appointments-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 22px 26px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    margin-top: 8px;
+}
+
+/* TAB NAV (giống ảnh: text ngang + gạch đỏ dưới active) */
+.appointment-filter-nav {
+    display: flex;
+    gap: 70px;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding-bottom: 16px;
+    margin-bottom: 22px;
+    justify-content: flex-start;
+    padding-left: 30px;
+    
+}
+
+.appointment-filter-nav .filter-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 4px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    position: relative;
+    transition: color .12s;
+}
+
+.appointment-filter-nav .filter-btn:hover {
+    color: #e53935; /* Hover thành màu đỏ */
+}
+
+/* gạch đỏ mảnh ở dưới tab active */
+.appointment-filter-nav .filter-btn.active {
+    color: #e53935; /* chữ đỏ giống ảnh */
+}
+.appointment-filter-nav .filter-btn.active::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3px;
+    background: #e53935; /* gạch đỏ */
+    bottom: -18px; /* cho giống ảnh: gạch nằm tách chút so với tab text */
+    width: 100%; 
+    border-radius: 3px;
+}
+
+/* ================== TABLE (khung xanh, header đậm) ================== */
+.appointments-table {
+    width: 100%; 
+    margin: 18px 0 6px; 
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #fff;
+}
+
+
+/* header cells - deep blue */
+.appointments-table thead th {
+    background: #0f66b3;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    padding: 12px 10px;
+    border-right: 1px solid rgba(255,255,255,0.2); 
+    vertical-align: middle;
+}
+.appointments-table thead th:last-child {
+    border-right: none;
+}
+
+/* body rows - large cell height, thin separators */
+.appointments-table td {
+    height: 55px; 
+    padding: 6px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    text-align: center;
+    font-size: 14px;
+}
+.appointments-table td:first-child { text-align: left; } 
+
+.appointments-table tbody tr td:first-child {
+    border-left: none; 
+}
+
+.appointments-table tbody tr + tr td {
+    border-top: none;
+}
+
+.appointments-table tbody tr:hover {
+    background: #f5f5f5; 
+    cursor: pointer;
+}
+
+/* ================== STATUS BADGES (pastel rounded) ================== */
+.status-badge {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;
+}
+
+/* colors close to screenshot */
+.status-pending {
+    background: #fff3cd; /* Vàng nhạt */
+    color: #856404;
+}
+
+.status-confirmed {
+    background: #d4edda; /* Xanh lá nhạt */
+    color: #155724;
+}
+
+.status-cancelled {
+    background: #f8d7da; /* Đỏ nhạt */
+    color: #721c24;
+}
+
+/* ensure status column has right alignment like image */
+.appointments-table td.status-cell {
+    text-align: center;
+}
+
+/* ================== APPOINTMENT PROGRESS BAR (3 BƯỚC CƠ BẢN) ================== */
+.appointment-progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 20px 0;
+    margin-bottom: 40px; 
+    max-width: 800px;
+    margin: 20px auto 40px auto; 
+}
+
+/* Định dạng các đường kẻ nằm giữa các bước */
+.progress-line {
+    position: absolute;
+    height: 6px; 
+    background-color: #e0e0e0;
+    top: calc(50% - 2px); 
+    transform: translateY(-50%);
+    width: 25%; 
+    transition: background-color 0.4s ease;
+    z-index: 5; 
+}
+
+/* Căn chỉnh vị trí các đường kẻ (cho 3 bước chính) */
+.progress-line.line-1 {
+    left: 12.5%; 
+    width: 35%;
+    top: 35%;
+}
+.progress-line.line-2 {
+    left: 50%; 
+    width: 35%;
+    top: 35%;
+}
+
+/* Định dạng một bước (vòng tròn + chữ) */
+.progress-step {
+    text-align: center;
+    width: 25%; 
+    position: relative;
+    /* Dùng flex để đảm bảo cả circle và p đều được căn giữa và xếp dọc */
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Định dạng vòng tròn */
+.progress-step .circle {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%;
+    background-color: #fff; 
+    color: #999; 
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 5px auto; 
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+    border: 3px solid #ccc;
+    z-index: 10;
+}
+
+/* Text dưới vòng tròn */
+.progress-step p {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+    font-weight: 500;
+    white-space: nowrap; /* Đảm bảo text không bị xuống dòng */
+}
+
+/* --- TRẠNG THÁI ACTIVE (XANH LÁ) --- */
+.progress-step.active .circle {
+    background-color: #27a745; 
+    border-color: #27a745;
+    color: white; 
+}
+.progress-step.active p {
+    color: #27a745;
+    font-weight: 600;
+}
+
+/* Đường kẻ đã hoàn thành (đường kẻ xanh lá) */
+.progress-line.active {
+    background-color: #27a745; 
+}
+
+/* --- TRẠNG THÁI HỦY (ĐỎ) --- */
+#step_cancelled {
+    width: 100%;
+    text-align: center;
+    order: 4; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#step_cancelled.cancelled .circle {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+#step_cancelled.cancelled p {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Sắp xếp vị trí cho 4 bước trong flexbox */
+#step_placed { order: 1; }
+#step_pending { order: 2; }
+#step_confirmed { order: 3; }
+
+
+/* ================== APPOINTMENTS VIEW TOGGLE ================== */
+/* Dùng để ẩn khối khi cần */
+#appointmentsListContainer.hidden {
+    display: none !important;
+}
+
+/* Nút quay lại danh sách */
+.back-to-list-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #0a6cb5;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 5px 0;
+}
+
+.back-to-list-link:hover {
+    text-decoration: underline;
+}
+
+/* Khung nội dung chi tiết */
+.detail-box {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Style cho các hàng thông tin chi tiết */
+.appointment-row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 15px;
+}
+.appointment-row:last-child {
+    border-bottom: none;
+}
+.appointment-row label {
+    font-weight: 500;
+    color: #555;
+    width: 120px;
+    flex-shrink: 0;
+}
+.appointment-row .appointment-display {
+    color: #333;
+    font-weight: 600;
+    flex-grow: 1;
+}

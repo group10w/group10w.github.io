@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>MedAdmin — Admin Full Mockup (Tailwind)</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+		/* small custom styles */
+		.sidebar {
+			min-width: 260px;
+		}
+
+		.active-item {
+			background: linear-gradient(90deg, #f8fafc, #eef2f7);
+		}
+
+		.table-fixed thead th {
+			position: sticky;
+			top: 0;
+			background: #fff;
+		}
+	</style>
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+	<div class="h-screen flex">
+		<!-- SIDEBAR -->
+		<aside class="sidebar bg-slate-800 text-slate-100 p-4 flex flex-col">
+			<div class="flex items-center gap-3 px-2 mb-6">
+				<div class="w-10 h-10 bg-teal-400 rounded-md flex items-center justify-center font-bold text-slate-900">
+					MD
+				</div>
+				<div>
+					<div class="text-lg font-semibold">MedAdmin</div>
+					<div class="text-sm text-slate-300">Hệ thống quản lý y tế</div>
+				</div>
+			</div>
+
+			<nav class="flex-1 space-y-1">
+				<button data-page="dashboard"
+					class="w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 hover:bg-slate-700 ">
+					<span>🏠</span><span>Dashboard</span>
+				</button>
+				<button data-page="records"
+					class="w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 hover:bg-slate-700 bg-slate-700">
+					<span>📋</span><span>Quản lý Hồ sơ y tế</span>
+				</button>
+				<button data-page="history"
+					class="w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 hover:bg-slate-700">
+					<span>🕒</span><span>Bảo trì Lịch sử khám bệnh</span>
+				</button>
+
+				<button data-page="appointments"
+					class="w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 hover:bg-slate-700">
+					<span>📅</span><span>Quản lý Lịch khám</span>
+				</button>
+				<button data-page="doctors"
+					class="w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 hover:bg-slate-700">
+					<span>👨‍⚕️</span><span>Bảo trì Bác sĩ</span>
+				</button>
+				<button data-page="departments"
+					class="w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 hover:bg-slate-700">
+					<span>🏥</span><span>Bảo trì Khoa</span>
+				</button>
+
+				<button data-page="accounts"
+					class="w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 hover:bg-slate-700">
+					<span>👥</span><span>Quản lý Tài khoản</span>
+				</button>
+			</nav>
+
+			<div class="mt-4">
+				<button id="logoutBtn"
+					class="w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 hover:bg-slate-700">
+					<span>📤</span><span>Đăng xuất</span>
+				</button>
+				<script>
+					const logoutBtn = document.getElementById("logoutBtn");
+					if (logoutBtn) {
+						logoutBtn.addEventListener('click', (e) => {
+							e.preventDefault();
+							localStorage.removeItem("loggedIn");
+							localStorage.removeItem("token");
+							localStorage.removeItem("adminId");
+							localStorage.removeItem("userId");
+							localStorage.removeItem("userName");
+							const onApiHost = /:(3000)$/.test(location.host) || location.pathname.startsWith("/admin-panel");
+							window.location.href = onApiHost
+								? "/customer/trangchupre/trangchu1.html"
+								: "../Khách hàng/trangchupre/trangchu1.html";
+						});
+					}
+				</script>
+			</div>
+		</aside>
+
+		<!-- MAIN -->
+		<main class="flex-1 overflow-auto p-6">
+			<!-- TOPBAR -->
+			<header class="flex items-center justify-between mb-6">
+				<div class="flex items-center gap-4">
+					<h2 id="pageTitle" class="text-2xl font-semibold">
+						Quản lý Hồ sơ y tế
+					</h2>
+					<div class="text-sm text-slate-500">Admin panel — MedAdmin</div>
+				</div>
+
+			</header>
+
+			<!-- PAGES CONTAINER -->
+			<section id="pages" class="space-y-6">
+				<!-- DASHBOARD -->
+				<section data-page="dashboard" class="hidden">
+					<div class="grid grid-cols-4 gap-4 mb-4">
+						<div class="bg-white rounded-lg p-4 shadow-sm">
+							<div class="text-sm text-slate-500">Tổng hồ sơ y tế</div>
+							<h2 id="totalRecords" class="text-2xl font-bold text-teal-600">0</h2>
+						</div>
+						<div class="bg-white rounded-lg p-4 shadow-sm">
+							<div class="text-sm text-slate-500">Số bác sĩ</div>
+							<h2 id="totalDoctors" class="text-2xl font-bold text-blue-600">0</h2>
+						</div>
+						<div class="bg-white rounded-lg p-4 shadow-sm">
+							<div class="text-sm text-slate-500">Lịch khám hôm nay</div>
+							<h2 id="todayAppointments" class="text-2xl font-bold text-orange-600">0</h2>
+						</div>
+						<div class="bg-white rounded-lg p-4 shadow-sm">
+							<div class="text-sm text-slate-500">Lịch chờ xác nhận</div>
+							<h2 id="newContacts" class="text-2xl font-bold text-red-600">0</h2>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-3 gap-4">
+						<div class="col-span-2 bg-white rounded-lg p-4 shadow-sm">
+							<h3 class="font-semibold mb-2">Biểu đồ lượt khám 30 ngày gần nhất</h3>
+							<div id="chartPlaceholder" class="h-48">
+								<canvas id="chartCanvas"></canvas>
+							</div>
+						</div>
+
+						<!-- 🆕 HOẠT ĐỘNG GẦN ĐÂY -->
+						<div class="bg-white rounded-lg p-4 shadow-sm">
+							<h3 class="font-semibold mb-3 text-slate-700 flex items-center gap-2">
+								<span>📋</span> Hoạt động gần đây
+							</h3>
+							<div id="recentActivities"
+								class="text-sm text-slate-600 space-y-2 max-h-48 overflow-y-auto">
+								<div class="text-slate-400 text-center py-4">Đang tải...</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- RECORDS -->
+				<section data-page="records" class="hidden">
+					<div class="flex items-center justify-between mb-4">
+						<h3 class="text-lg font-semibold">Quản lý Hồ sơ y tế</h3>
+						<button id="openAddHosoyte" class="bg-teal-500 text-white px-3 py-2 rounded-lg">
+							➕ Thêm hồ sơ y tế
+						</button>
+					</div>
+
+					<div class="bg-white rounded-lg shadow p-4">
+						<table class="min-w-full" id="hosoyteTable">
+							<thead>
+								<tr class="bg-gray-100 text-sm">
+									<th class="p-2 text-left">ID Hồ sơ</th>
+									<th class="p-2 text-left">ID Khách hàng</th>
+									<th class="p-2 text-center">Hành động</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</section>
+
+				<!-- MODAL: Thêm hồ sơ y tế -->
+				<div id="hosoyteModal" class="fixed inset-0 flex items-center justify-center bg-black/40 hidden">
+					<div class="bg-white rounded-lg w-11/12 max-w-md p-6 shadow-lg">
+						<div class="flex items-center justify-between mb-4 border-b pb-2">
+							<h3 class="text-lg font-semibold text-slate-700">Thêm hồ sơ y tế</h3>
+							<button id="closeHosoyteModal" class="text-slate-500 hover:text-red-500">✖️</button>
+						</div>
+
+						<form id="hosoyteForm" class="space-y-4">
+							<div>
+								<label class="block text-sm font-medium mb-1">ID khách hàng</label>
+								<input id="idKHInput" type="number"
+									class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+									placeholder="Nhập ID khách hàng" required />
+							</div>
+
+							<div class="flex justify-end gap-2 pt-2 border-t">
+								<button type="button" id="cancelHosoyte"
+									class="px-4 py-2 border rounded hover:bg-gray-100">
+									Hủy
+								</button>
+								<button type="submit"
+									class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
+									Lưu
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- HISTORY (BẢO TRÌ LỊCH SỬ KHÁM BỆNH) -->
+				<section data-page="history" class="hidden">
+					<div class="flex items-center justify-between mb-4">
+						<h3 class="text-lg font-semibold">Bảo trì Lịch sử khám bệnh</h3>
+						<button id="openAddLS" class="bg-teal-500 text-white px-3 py-2 rounded-lg">
+							➕ Thêm lịch sử
+						</button>
+					</div>
+
+					<div class="bg-white rounded-lg shadow p-4 overflow-x-auto">
+						<table class="min-w-full" id="lichsuTable">
+							<thead>
+								<tr class="bg-gray-100 text-sm">
+									<th class="p-2 text-left">ID</th>
+									<th class="p-2 text-left">Ngày khám</th>
+									<th class="p-2 text-left">Kết luận</th>
+									<th class="p-2 text-left">Chi tiết</th>
+									<th class="p-2 text-left">Bác sĩ</th>
+									<th class="p-2 text-left">Khoa</th>
+									<th class="p-2 text-left">Mã Hồ sơ</th>
+									<th class="p-2 text-center">Hành động</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</section>
+
+				<!-- MODAL: Thêm / Sửa lịch sử khám -->
+				<div id="lichsuModal" class="fixed inset-0 flex items-center justify-center bg-black/40 hidden">
+					<div class="bg-white rounded-lg w-11/12 max-w-md p-6 shadow-lg">
+						<div class="flex items-center justify-between mb-4 border-b pb-2">
+							<h3 id="lichsuTitle" class="text-lg font-semibold text-slate-700">Thêm lịch sử khám</h3>
+							<button id="closeLSModal" class="text-slate-500 hover:text-red-500">✖️</button>
+						</div>
+
+						<form id="lichsuForm" class="space-y-3">
+							<input type="hidden" id="idLS" />
+							<div>
+								<label class="block text-sm font-medium mb-1">Ngày khám</label>
+								<input id="ngayKhamLS" type="date" class="w-full border rounded px-3 py-2" required />
+							</div>
+							<div>
+								<label class="block text-sm font-medium mb-1">Kết luận</label>
+								<input id="ketLuanLS" type="text" class="w-full border rounded px-3 py-2" required />
+							</div>
+							<div>
+								<label class="block text-sm font-medium mb-1">Chi tiết</label>
+								<textarea id="chiTietLS" class="w-full border rounded px-3 py-2"></textarea>
+							</div>
+							<div>
+								<label class="block text-sm font-medium mb-1">Bác sĩ</label>
+								<select id="idBacSiLS" class="w-full border rounded px-3 py-2" required></select>
+							</div>
+							<div>
+								<label class="block text-sm font-medium mb-1">Khoa</label>
+								<select id="idKhoaLS" class="w-full border rounded px-3 py-2" required></select>
+							</div>
+							<div>
+								<label class="block text-sm font-medium mb-1">Mã Hồ sơ y tế</label>
+								<select id="idHoSoYTeLS" class="w-full border rounded px-3 py-2" required></select>
+							</div>
+							<div class="flex justify-end gap-2 pt-2 border-t">
+								<button type="button" id="cancelLS" class="px-4 py-2 border rounded hover:bg-gray-100">
+									Hủy
+								</button>
+								<button type="submit"
+									class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
+									Lưu
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+
+				<!-- APPOINTMENTS -->
+				<section data-page="appointments" class="hidden">
+					<div class="flex items-center justify-between mb-4">
+						<h3 class="text-lg font-semibold">Quản lý Lịch khám</h3>
+						<button id="openAddLich" class="bg-teal-500 text-white px-3 py-2 rounded-lg">
+							➕ Thêm lịch
+						</button>
+					</div>
+
+					<div class="bg-white rounded-lg shadow p-4">
+						<table class="min-w-full" id="lichTable">
+							<thead>
+								<tr class="bg-gray-100 text-sm">
+									<th class="p-2 text-left">ID</th>
+									<th class="p-2 text-left">ID Khách hàng</th>
+									<th class="p-2 text-left">Họ tên bệnh nhân</th>
+									<th class="p-2 text-left">Lý do</th>
+									<th class="p-2 text-left">Ngày khám</th>
+									<th class="p-2 text-left">Giờ khám</th>
+									<th class="p-2 text-left">Bác sĩ</th>
+									<th class="p-2 text-left">Khoa</th>
+									<th class="p-2 text-left">Trạng thái</th>
+									<th class="p-2 text-left">Hành động</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</section>
+
+
+				<!-- MODAL: Thêm lịch khám -->
+				<div id="lichModal" class="fixed inset-0 flex items-center justify-center bg-black/40 hidden">
+					<div class="bg-white rounded-lg w-11/12 max-w-md p-6 shadow-lg">
+						<div class="flex items-center justify-between mb-4 border-b pb-2">
+							<h3 class="text-lg font-semibold text-slate-700">Thêm lịch khám</h3>
+							<button id="closeLichModal" class="text-slate-500 hover:text-red-500">✖️</button>
+						</div>
+
+						<form id="lichForm" class="space-y-4">
+							<div>
+								<label class="block text-sm font-medium mb-1">ID Khách hàng</label>
+								<input id="idKH" type="number"
+									class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+									placeholder="Nhập ID khách hàng" required />
+							</div>
+
+							<div>
+								<label class="block text-sm font-medium mb-1">Họ tên bệnh nhân</label>
+								<input id="hoTen" type="text"
+									class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+									placeholder="Nhập họ tên bệnh nhân" required />
+							</div>
+
+							<div>
+								<label class="block text-sm font-medium mb-1">Lý do khám</label>
+								<textarea id="lyDo"
+									class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+									placeholder="Nhập lý do khám"></textarea>
+							</div>
+
+							<div class="grid grid-cols-2 gap-3">
+								<div>
+									<label class="block text-sm font-medium mb-1">Ngày khám</label>
+									<input id="ngayKham" type="date"
+										class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+										required />
+								</div>
+								<div>
+									<label class="block text-sm font-medium mb-1">Giờ khám</label>
+									<input id="gioKham" type="time"
+										class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+										required />
+								</div>
+							</div>
+
+							<div>
+								<label class="block text-sm font-medium mb-1">Khoa</label>
+								<select id="idKhoa"
+									class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+									required></select>
+							</div>
+
+							<div>
+								<label class="block text-sm font-medium mb-1">Bác sĩ</label>
+								<select id="idBacSi"
+									class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+									required></select>
+							</div>
+
+							<div class="flex justify-end gap-2 pt-2 border-t">
+								<button type="button" id="cancelLich"
+									class="px-4 py-2 border rounded hover:bg-gray-100">
+									Hủy
+								</button>
+								<button type="submit"
+									class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
+									Lưu
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+
+
+				<!-- DOCTORS -->
+				<section data-page="doctors" class="hidden">
+					<div class="flex items-center justify-between">
+						<h3 class="text-lg font-semibold">Bảo trì Bác sĩ</h3>
+						<button class="bg-teal-500 text-white px-3 py-2 rounded-lg">
+							➕ Thêm bác sĩ
+						</button>
+					</div>
+
+					<div class="mt-4 bg-white rounded-lg shadow p-4">
+						<table class="min-w-full">
+							<thead>
+								<tr>
+									<th class="p-2 text-left">ID</th>
+									<th class="p-2 text-left">Họ tên</th>
+									<th class="p-2 text-left">Học vị</th>
+									<th class="p-2 text-left">Khoa</th>
+									<th class="p-2 text-left">Hành động</th>
+								</tr>
+							</thead>
+
+
+							<tbody>
+								<tr class="border-t">
+									<td class="p-2">Dr. Lê Anh</td>
+									<td class="p-2">Nội</td>
+									<td class="p-2">Active</td>
+									<td class="p-2">✏️ 🗑️</td>
+								</tr>
+								<tr class="border-t">
+									<td class="p-2">Dr. Trần Văn A</td>
+									<td class="p-2">Sản</td>
+									<td class="p-2">Active</td>
+									<td class="p-2">✏️ 🗑️</td>
+								</tr>
+								<tr class="border-t">
+									<td class="p-2">Dr. Nguyễn B</td>
+									<td class="p-2">Nhi</td>
+									<td class="p-2">Inactive</td>
+									<td class="p-2">✏️ 🗑️</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+
+				<!-- DEPARTMENTS -->
+				<section data-page="departments" class="hidden">
+					<div class="flex items-center justify-between mb-4">
+						<h3 class="text-lg font-semibold">Bảo trì Khoa</h3>
+						<div>
+							<input id="searchDept" type="text" placeholder="🔍 Tìm khoa..."
+								class="border rounded px-3 py-2" />
+							<button id="openAddDept" class="bg-teal-500 text-white px-3 py-2 rounded-lg">
+								➕ Thêm khoa
+							</button>
+							<button id="refreshDept" class="bg-white border px-3 py-2 rounded-lg ml-2">
+								🔄 Làm mới
+							</button>
+						</div>
+					</div>
+
+					<div class="bg-white rounded-lg shadow p-4">
+						<table id="deptTable" class="min-w-full">
+							<thead>
+								<tr class="bg-gray-100">
+									<th class="p-2 text-left">ID</th>
+									<th class="p-2 text-left">Tên Khoa</th>
+									<th class="p-2 text-left">Hành động</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</section>
+
+				<!-- AI MAINTENANCE -->
+				<section data-page="ai" class="hidden">
+					<div class="flex items-center justify-between">
+						<h3 class="text-lg font-semibold">Bảo trì Tư vấn AI</h3>
+						<div class="text-sm text-slate-500">
+							Quản lý intents, mẫu hỏi/đáp
+						</div>
+					</div>
+
+					<div class="mt-4 bg-white rounded-lg shadow p-4">
+						<table class="min-w-full">
+							<thead>
+								<tr>
+									<th class="p-2 text-left">Intent</th>
+									<th class="p-2 text-left">Mô tả</th>
+									<th class="p-2 text-left">Hành động</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="border-t">
+									<td class="p-2">Hẹn lịch</td>
+									<td class="p-2">Hỗ trợ đặt lịch khám</td>
+									<td class="p-2">Edit · Train</td>
+								</tr>
+								<tr class="border-t">
+									<td class="p-2">Triệu chứng đau ngực</td>
+									<td class="p-2">Hỏi về dấu hiệu đau ngực</td>
+									<td class="p-2">Edit · Train</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+
+				<!-- CONTACTS -->
+				<section data-page="contacts" class="hidden">
+					<div class="flex items-center justify-between">
+						<h3 class="text-lg font-semibold">Bảo trì Liên hệ</h3>
+						<div class="text-sm text-slate-500">Xem và xử lý phản hồi</div>
+					</div>
+
+					<div class="mt-4 bg-white rounded-lg shadow p-4">
+						<table class="min-w-full">
+							<thead>
+								<tr>
+									<th class="p-2 text-left">Email</th>
+									<th class="p-2 text-left">Nội dung</th>
+									<th class="p-2 text-left">Trạng thái</th>
+									<th class="p-2 text-left">Hành động</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="border-t">
+									<td class="p-2">user1@example.com</td>
+									<td class="p-2">Không nhận được mã xác thực</td>
+									<td class="p-2">Mới</td>
+									<td class="p-2">Xử lý</td>
+								</tr>
+								<tr class="border-t">
+									<td class="p-2">user2@example.com</td>
+									<td class="p-2">Yêu cầu huỷ lịch</td>
+									<td class="p-2">Đã xử lý</td>
+									<td class="p-2">—</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+
+				<!-- ACCOUNTS -->
+				<section data-page="accounts" class="hidden">
+					<div class="flex items-center justify-between">
+						<h3 class="text-lg font-semibold">Quản lý Tài khoản</h3>
+					</div>
+
+					<div class="mt-4 bg-white rounded-lg shadow p-4">
+						<table class="min-w-full">
+							<thead>
+								<tr>
+									<th class="p-2 text-left">ID</th>
+									<th class="p-2 text-left">Họ tên</th>
+									<th class="p-2 text-left">Giới tính</th>
+									<th class="p-2 text-left">Số điện thoại</th>
+									<th class="p-2 text-left">Hành động</th>
+								</tr>
+							</thead>
+							<tbody id="accountList">
+								<!-- Dữ liệu sẽ được tải từ server -->
+							</tbody>
+						</table>
+					</div>
+				</section>
+			</section>
+
+			<!-- FOOTER -->
+			<footer class="mt-6 text-center text-sm text-slate-400">
+				MedAdmin • Mockup — Không dùng dữ liệu thật
+			</footer>
+		</main>
+	</div>
+
+	<!-- MODAL: Add / Edit Record -->
+	<div id="recordModal" class="fixed inset-0 flex items-center justify-center bg-black/40 hidden">
+		<div class="bg-white rounded-lg w-11/12 md:w-2/3 p-6">
+			<div class="flex items-center justify-between mb-4">
+				<h3 class="text-lg font-semibold">Thêm / Sửa Hồ sơ</h3>
+				<button id="closeModal" class="text-slate-500">✖️</button>
+			</div>
+
+			<form id="recordForm" class="grid grid-cols-2 gap-4">
+				<div>
+					<label class="text-sm">Họ tên</label>
+					<input name="name" class="w-full border rounded px-3 py-2" />
+				</div>
+				<div>
+					<label class="text-sm">Ngày sinh</label>
+					<input name="dob" type="date" class="w-full border rounded px-3 py-2" />
+				</div>
+				<div>
+					<label class="text-sm">Giới tính</label>
+					<select name="gender" class="w-full border rounded px-3 py-2">
+						<option>Nam</option>
+						<option>Nữ</option>
+					</select>
+				</div>
+				<div>
+					<label class="text-sm">Số điện thoại</label>
+					<input name="phone" class="w-full border rounded px-3 py-2" />
+				</div>
+				<div class="col-span-2">
+					<label class="text-sm">Chẩn đoán</label>
+					<textarea name="diagnosis" class="w-full border rounded px-3 py-2" rows="3"></textarea>
+				</div>
+
+				<div class="col-span-2 flex justify-end gap-2 mt-2">
+					<button type="button" id="cancelModal" class="px-4 py-2 border rounded">
+						Hủy
+					</button>
+					<button type="submit" class="px-4 py-2 bg-teal-500 text-white rounded">
+						Lưu
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		const isAdminLoggedIn = localStorage.getItem("loggedIn") === "true"
+			&& localStorage.getItem("adminId")
+			&& localStorage.getItem("token");
+		if (!isAdminLoggedIn) {
+			const onApiHost = /:(3000)$/.test(location.host) || location.pathname.startsWith("/admin-panel");
+			window.location.href = onApiHost
+				? "/customer/trangchupre/trangchu1.html"
+				: "../Khách hàng/trangchupre/trangchu1.html";
+		}
+
+		// Simple client-side navigation
+		const navButtons = document.querySelectorAll("aside button[data-page]");
+		const pages = document.querySelectorAll("section[data-page]");
+		const title = document.getElementById("pageTitle");
+
+		function showPage(name) {
+			pages.forEach((p) =>
+				p.dataset.page === name ?
+					p.classList.remove("hidden") :
+					p.classList.add("hidden"),
+			);
+			navButtons.forEach((b) =>
+				b.dataset.page === name ?
+					b.classList.add("bg-slate-700") :
+					b.classList.remove("bg-slate-700"),
+			);
+			// set title
+			const labels = {
+				dashboard: "Dashboard",
+				records: "Quản lý Hồ sơ y tế",
+				history: "Bảo trì Lịch sử khám bệnh",
+				appointments: "Quản lý Lịch khám",
+				doctors: "Bảo trì Bác sĩ",
+				departments: "Bảo trì Khoa",
+				ai: "Bảo trì Tư vấn AI",
+				contacts: "Bảo trì Liên hệ",
+				accounts: "Quản lý Tài khoản",
+			};
+			title.textContent = labels[name] || "MedAdmin";
+		}
+
+		navButtons.forEach((b) =>
+			b.addEventListener("click", () => showPage(b.dataset.page)),
+		);
+		// default show records
+		showPage("records");
+
+		// Modal behaviour
+		const modal = document.getElementById("recordModal");
+		const addRecordBtn = document.getElementById("addRecordBtn");
+		const closeModalBtn = document.getElementById("closeModal");
+		const cancelModalBtn = document.getElementById("cancelModal");
+		if (addRecordBtn && modal) {
+			addRecordBtn.addEventListener("click", () => modal.classList.remove("hidden"));
+		}
+		if (closeModalBtn && modal) {
+			closeModalBtn.addEventListener("click", () => modal.classList.add("hidden"));
+		}
+		if (cancelModalBtn && modal) {
+			cancelModalBtn.addEventListener("click", () => modal.classList.add("hidden"));
+		}
+
+		// Simple CSV export
+		const exportCsvBtn = document.getElementById("exportCsv");
+		if (exportCsvBtn) {
+			exportCsvBtn.addEventListener("click", () => {
+				const rows = [];
+				document.querySelectorAll("#recordsTable tbody tr").forEach((tr) => {
+					const cells = Array.from(tr.querySelectorAll("td")).map((td) =>
+						td.textContent.trim(),
+					);
+					rows.push(cells.join(","));
+				});
+				const csv = [
+					"Mã,Họ tên,Tuổi,Giới tính,Bác sĩ,Ngày khám,Tình trạng",
+					...rows,
+				].join("\n");
+				const blob = new Blob([csv], {
+					type: "text/csv",
+				});
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = "medical_records.csv";
+				a.click();
+				URL.revokeObjectURL(url);
+			});
+		}
+
+		// simple search filter
+		const globalSearchInput = document.getElementById("globalSearch");
+		if (globalSearchInput) {
+			globalSearchInput.addEventListener("input", (e) => {
+				const q = e.target.value.toLowerCase();
+				document.querySelectorAll("#recordsTable tbody tr").forEach((tr) => {
+					const text = tr.textContent.toLowerCase();
+					tr.style.display = text.includes(q) ? "" : "none";
+				});
+			});
+		}
+
+		// sample handlers for edit/view/delete
+		document.querySelectorAll(".viewRecord").forEach((btn) =>
+			btn.addEventListener("click", (ev) => {
+				alert("Xem chi tiết (mockup)");
+			}),
+		);
+		document.querySelectorAll(".editRecord").forEach((btn) =>
+			btn.addEventListener("click", (ev) => {
+				modal.classList.remove("hidden");
+			}),
+		);
+		document.querySelectorAll(".delRecord").forEach((btn) =>
+			btn.addEventListener("click", (ev) => {
+				if (confirm("Bạn có chắc muốn xóa hồ sơ này không?")) {
+					const tr = ev.target.closest("tr");
+					tr.remove();
+				}
+			}),
+		);
+
+		// form submit (fake save)
+		const recordForm = document.getElementById("recordForm");
+		if (recordForm) {
+			recordForm.addEventListener("submit", (e) => {
+				e.preventDefault();
+				alert("Lưu hồ sơ (mockup)");
+				if (modal) modal.classList.add("hidden");
+			});
+		}
+	</script>
+
+	<div id="deptModal" class="fixed inset-0 flex items-center justify-center bg-black/40 hidden">
+		<div class="bg-white rounded-lg w-11/12 max-w-md p-6">
+			<div class="flex items-center justify-between mb-4">
+				<h3 id="deptModalTitle" class="text-lg font-semibold">Thêm khoa</h3>
+				<button id="closeDeptModal" class="text-slate-500">✖️</button>
+			</div>
+			<form id="deptForm" class="space-y-3">
+				<input type="hidden" id="deptIdKhoa" />
+				<div>
+					<label class="block text-sm">Tên khoa <span class="text-red-500">*</span></label>
+					<input id="tenKhoa" class="w-full border rounded px-3 py-2" required />
+				</div>
+				<div class="flex justify-end gap-2">
+					<button type="button" id="cancelDept" class="px-4 py-2 border rounded">
+						Hủy
+					</button>
+					<button type="submit" class="px-4 py-2 bg-teal-500 text-white rounded">
+						Lưu
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="admin-doctors.js"></script>
+	<script src="admin-tkhoan.js"></script>
+	<script src="admin-lichkham.js"></script>
+	<script src="admin-hosoyte.js"></script>
+	<script src="admin-lskhambenh.js"></script>
+	<script src="admin-dashboard.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+	<script src="admin-khoa.js"></script>
+
+</body>
+
+</html>

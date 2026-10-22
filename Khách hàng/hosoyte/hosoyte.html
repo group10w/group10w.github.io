@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ sơ sức khỏe</title>
+  <link rel="stylesheet" href="hosoyte.css">
+</head>
+<body>
+  <header>
+    <a href="../trangchu/trangchu1.html">
+      <img src="../Picture/logo1.png" alt="Logo bệnh viện">
+    </a>
+    <p class="hotline">HOTLINE: <span style="color: red;">1900 6422</span></p>
+  </header>
+
+  <div class="header">
+    <h1>🩺 Hồ sơ sức khỏe điện tử</h1>
+  </div>
+
+  <!-- Thông tin bệnh nhân -->
+  <section class="profile-card">
+    <h2>Thông tin bệnh nhân</h2>
+    <p><strong>Họ và tên:</strong> <span id="name"></span></p>
+    <p><strong>Giới tính:</strong> <span id="gender"></span></p>
+    <p><strong>Ngày sinh:</strong> <span id="dob"></span></p>
+    <p><strong>Mã hồ sơ:</strong> <span id="recordId"></span></p>
+    <p><strong>CCCD:</strong> <span id="cccd"></span></p>
+    <p><strong>Địa chỉ:</strong> <span id="diaChi"></span></p>
+  </section>
+
+  <!-- Lịch sử khám -->
+  <section class="record-list">
+    <h2>Lịch sử khám bệnh</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Ngày khám</th>
+          <th>Bác sĩ</th>
+          <th>Khoa</th>
+          <th>Kết luận</th>
+        </tr>
+      </thead>
+      <tbody id="recordTable">
+        <!-- Dữ liệu JS sẽ điền vào -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Chi tiết kết quả khám -->
+  <section class="detail-box">
+    <h3>Chi tiết kết quả khám</h3>
+    <p id="detailText">Bấm vào một dòng trong bảng để xem chi tiết kết quả.</p>
+  </section>
+
+  <footer>
+    <div class="logo">
+      <img src="../Picture/logo2.png" alt="Logo bệnh viện">
+    </div>
+    <div class="location">
+      <p style="font-weight: bold;font-size: 18px;">BỆNH VIỆN ĐA KHOA QUỐC TẾ ICARE</p>
+      <div class="location-content">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+        <p>Cơ sở Tôn Thất Tùng: <span>Số 1 Tôn Thất Tùng, Phường Trung Tự, Quận Đống Đa, Hà Nội</span></p>
+      </div>
+      <div class="location-content">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+        <p>Cơ sở Cầu Giấy: <span>Số 10 Trương Công Giai, Cầu Giấy, Hà Nội</span></p>
+      </div>
+      <div class="location-content">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+        <p>Cơ sở Hoàng Mai: <span>Số 587, Tam Trinh, Yên Sở, Hoàng Mai, Hà Nội</span></p>
+      </div>
+      <div class="location-content">
+        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        <p>Email: <span>icare@hospital.vn</span></p>
+      </div>
+      <div class="location-content">
+        <i class="fa-solid fa-phone" aria-hidden="true"></i>
+        <p>Tổng đài: <span>1900 6422</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="hosoyte.js"></script>
+</body>
+</html>

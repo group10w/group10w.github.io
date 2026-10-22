@@ -1,0 +1,498 @@
+:root {
+    --primary: #007bff;
+    --primary-dark: #005ec2;
+    --bg: #f5f7fb;
+    --text: #222;
+    --muted: #6b7280;
+    --card-bg: #fff;
+    --radius: 14px;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif
+}
+
+body {
+    margin: 0;
+    background: #f4f6f9;
+    color: #222
+}
+
+/* --- Header / hero with search --- */
+header {
+    width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+}
+
+header a {
+    text-decoration: none;
+    margin-left: 50px;
+}
+
+header a img {
+    width: 300px;
+    height: 70px;
+}
+
+.hotline {
+    margin-left: auto;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 60px;
+}
+
+.booking-box {
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 100%;
+    margin: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    align-items: center;
+    justify-content: center;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-box {
+    flex: 1;
+    position: relative;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.input-box input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px #bfdbfe;
+}
+
+/* Dropdown phần chọn khoa */
+.dropdown {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: none;
+    overflow: hidden;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.dropdown-item {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #f9fafb;
+}
+
+.dropdown-item h4 {
+    margin: 0;
+    color: #111827;
+    font-size: 15px;
+}
+
+.dropdown-item p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* --- Content area (doctor list) --- */
+.content {
+    max-width: 1180px;
+    margin: 18px auto;
+    padding: 0 12px
+}
+
+.date-range {
+    color: #7a7a7a;
+    margin: 12px 6px 20px;
+    font-weight: 600
+}
+
+.doctor-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(20, 20, 60, 0.06);
+    margin-bottom: 14px;
+    overflow: visible;
+    position: relative;
+}
+
+.doctor-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 18px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #eee;
+    flex-shrink: 0;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+.meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.meta .name {
+    font-weight: 700;
+    color: #111;
+    font-size: 16px
+}
+
+.meta .spec {
+    color: #888;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px
+}
+
+.meta .spec .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: inline-block
+}
+
+.price {
+    color: var(--accent);
+    font-weight: 700;
+    margin-left: 12px
+}
+
+/* arrow button right */
+.arrow-btn {
+    margin-left: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9e9ea;
+    border: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    cursor: pointer;
+    transition: transform .25s, background .15s;
+    color: var(--primary);
+}
+
+.arrow-btn:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.arrow-btn.open {
+    background: var(--primary);
+    color: #fff;
+    transform: rotate(180deg)
+}
+
+/* --- details panel (slide) --- */
+.details {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .35s cubic-bezier(.2, .9, .3, 1), padding .25s;
+    padding: 0 18px;
+    background: transparent;
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.details-inner {
+    padding: 18px 0 24px;
+    background: linear-gradient(180deg, #fafcff, #ffffff);
+    border-radius: 0 0 12px 12px;
+}
+
+/* days row */
+.days {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.day-card {
+    min-width: 72px;
+    border-radius: 10px;
+    background: #efefef;
+    padding: 10px 10px;
+    text-align: center;
+    font-weight: 600;
+    color: #333;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+
+.day-card .weekday {
+    font-size: 12px;
+    color: #666
+}
+
+.day-card .date {
+    font-size: 16px;
+    margin-top: 6px
+}
+
+.day-card.selected {
+    background: var(--blue-600);
+    color: #000000;
+    box-shadow: none
+}
+
+/* clinic box */
+.clinic {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: #eaf3ff;
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(0, 92, 185, 0.06)
+}
+
+.clinic .clinic-icon {
+    width: 46px;
+    height: 46;
+    border-radius: 10px;
+    background: #fff;
+    border: 2px solid rgba(0, 92, 185, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue-600);
+    font-weight: 700
+}
+
+.clinic .clinic-info {
+    font-size: 14px
+}
+
+.clinic .clinic-info .title {
+    font-weight: 700;
+    color: #003e8f;
+    margin-bottom: 4px
+}
+
+.clinic .clinic-info .addr {
+    color: #666;
+    font-size: 13px
+}
+
+/* service + times */
+.service {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 14px
+}
+
+.service .srv-name {
+    color: #333
+}
+
+.service .srv-price {
+    color: var(--accent);
+    font-weight: 700
+}
+
+.times {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px
+}
+
+.time-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    min-width: 78px;
+    text-align: center
+}
+
+.time-btn:hover {
+    background: #eaf1ff;
+    border-color: var(--blue-600);
+    color: var(--blue-600)
+}
+
+/* small screens adjustments */
+@media (max-width:640px) {
+    .search-grid {
+        grid-template-columns: 1fr;
+        gap: 10px
+    }
+
+    .arrow-btn {
+        width: 36px;
+        height: 36px
+    }
+}
+
+footer {
+    width: 100%;
+    height: max-content;
+    background-color: #363946;
+    display: flex;
+    align-items: center;
+    color: white;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.logo img {
+    width: 300px;
+    height: 70px;
+}
+
+.location {
+    margin-left: 50px;
+    width: fit-content;
+    display: inline-block;
+    line-height: 10px;
+}
+
+.location-content {
+    display: flex;
+    align-items: center;
+}
+
+.location-content p {
+    color: rgb(203, 201, 201);
+}
+
+.location-content i {
+    margin-right: 5px;
+}
+
+.location-content span {
+    color: white;
+}
+
+/* ✅ PHẦN THÊM MỚI: POPUP XÁC NHẬN ĐẶT LỊCH */
+#confirmPopup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#confirmPopup .popup-content {
+    background: white;
+    border-radius: 12px;
+    padding: 25px 35px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+#confirmPopup h3 {
+    margin: 0 0 15px;
+    font-size: 18px;
+    color: #222;
+}
+
+#confirmPopup button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 0 8px;
+}
+
+#confirmYes {
+    background: var(--primary);
+    color: white;
+}
+
+#confirmYes:hover {
+    background: var(--primary-dark);
+}
+
+#confirmNo {
+    background: #ddd;
+    color: #333;
+}
+
+#confirmNo:hover {
+    background: #ccc;
+}
+
+
+.btnViewLich{
+    background-color: #F7D9C4;
+    color: black;
+    padding: 16px 40px;
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    border-radius: 10px;
+     transition: all 0.7s ease-in-out;
+    font-weight: 600;
+    color: white;
+    font-size: 20px;
+    margin-right: 50px;
+}
+.btnViewLich:hover{
+    background-color: white;
+    color: var(--primary);
+}
+

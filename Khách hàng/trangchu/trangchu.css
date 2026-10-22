@@ -1,0 +1,398 @@
+
+
+body {
+    font-size: 16px;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+}
+
+header {
+    width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+
+}
+
+header a {
+    text-decoration: none;
+    margin-left: 50px;
+}
+
+header a img {
+    width: 300px;
+    height: 70px;
+}
+
+.hotline {
+    margin-left: auto;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 60px;
+}
+
+main {
+    width: 100%;
+    background-color: rgb(237, 236, 236);
+    display: block;
+    height: max-content;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 0; /* ✅ Quan trọng: Bỏ margin phải */
+    padding-bottom: 20px;
+    display: block; /* Nên dùng block thay vì inline-block cho container chính */
+    width: 100%;
+
+}
+
+
+
+
+.intro {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.intro h1 {
+    color: #0954a1;
+    font-weight: bold;
+
+}
+
+.intro h2 {
+    color: black;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.features {
+    display: flex;
+    padding-top: 20px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+
+#btnDatLich,
+#btnHoSo {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+    margin-left: 50px;
+    text-decoration: none;
+    color: #000;
+}
+
+.feature-box {
+    width: 300px;
+    height: 100px;
+    display: flex;
+    background-color: white;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#btnDatLich:hover,
+#btnHoSo:hover {
+    transform: scale(1.1);
+}
+
+.feature-box img {
+    width: 70px;
+    height: 90px;
+}
+
+.feature-box h3 {
+    font-weight: bold;
+    text-align: center;
+}
+
+.illustration img {
+    width: 300px;
+    height: 200px;
+    margin-left: 50px;
+
+}
+
+footer {
+    width: 100%;
+    height: max-content;
+    background-color: #363946;
+    display: flex;
+    align-items: center;
+    color: white;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.logo img {
+    width: 300px;
+    height: 70px;
+}
+
+.location {
+    margin-left: 50px;
+    width: fit-content;
+    display: inline-block;
+    line-height: 10px;
+}
+
+.location-content {
+    display: flex;
+    align-items: center;
+}
+
+.location-content p {
+    color: rgb(203, 201, 201);
+}
+
+.location-content i {
+    margin-right: 5px;
+}
+
+.location-content span {
+    color: white;
+}
+
+/* Nút chatbot */
+#chatBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    height: 60px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transition: width 0.3s ease, padding 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    /* mặc định tròn */
+    padding: 0;
+}
+
+#chatBtn img {
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+}
+
+#chatBtn span {
+    white-space: nowrap;
+    opacity: 0;
+    margin-left: 8px;
+    transition: opacity 0.3s ease;
+    display: none;
+    font-weight: bold;
+}
+
+#chatBtn:hover {
+    width: 180px;
+    /* kéo dài */
+    justify-content: flex-start;
+    padding: 0 15px;
+    display: flex;
+    color: white;
+}
+
+#chatBtn:hover span {
+    display: flex;
+    color: white;
+}
+
+#chatBtn:hover span {
+    opacity: 1;
+    /* hiện chữ */
+}
+
+/* Chat window */
+#chatWindow {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 320px;
+    height: 420px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 999;
+}
+
+.chat-header {
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    display: flex;
+}
+
+.chat-header span {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.chat-header img {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+}
+
+.chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: #f5f5f5;
+}
+
+.chat-input {
+    display: flex;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    outline: none;
+}
+
+.chat-input button {
+    border: none;
+    background: #007bff;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.chat-message {
+    margin: 5px 0;
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 70%;
+}
+
+.chat-message.user {
+    background: #007bff;
+    color: #fff;
+    float: right;
+    clear: both;
+}
+
+.chat-message.bot {
+    background: #e5e5ea;
+    color: #000;
+    float: left;
+    clear: both;
+}
+
+/* Vùng chứa user-menu */
+.user-menu {
+    margin-left: 1200px;
+    margin-right: 50px;
+    position: relative; 
+    display: flex;
+    align-items: center;
+    padding-top: 25px; 
+}
+/* Bọc nút */
+.user-menu-content {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #efefef;
+}
+.user-menu-content .avatar-placeholder {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e1e1e1; /* Màu xám cho avatar chưa có ảnh */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-right: 10px;
+    border: 1px solid rgba(0,0,0,.09);
+}
+/* Nút hiển thị tên khách hàng */
+.user-info-btn {
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    padding: 0;
+    text-align: left;
+    cursor: default;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.user-info-btn:hover {
+    color: #085a97;
+}
+
+/* Menu dropdown */
+.dropdown {
+display: none;
+    position: absolute;
+    top: auto;
+    right: auto; 
+    background-color: #f9f9f9;
+    min-width: 180px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 20;
+}
+
+/* Button trong dropdown */
+.dropdown button {
+    width: 100%;
+    padding: 12px 14px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dropdown button:hover {
+    background-color: #e5e5e5;
+}
+
+/* Fix link bao button */
+.dropdown a {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+}
+
+/* Hover để hiện menu */
+.user-menu:hover .dropdown {
+    display: block;
+}
