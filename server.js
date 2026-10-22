@@ -6,6 +6,10 @@ const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const crypto = require("crypto");
+const { createLoginService } =
+    require("./loginService");
+const { createRegisterService } =
+    require("./registerService");
 
 // Load .env nếu có (không bắt buộc package dotenv)
 (() => {
@@ -394,155 +398,74 @@ function runTransaction(queries, onSuccess, onError) {
 
 
 // ================== API ĐĂNG KÝ (REGISTER) ==================
-app.post("/register", (req, res) => {
-  const { hoten, sdt, matkhau } = req.body;
+const { createRegisterService } = require("./registerService");
 
-  if (!hoten || !sdt || !matkhau) {
-    return res.status(400).json({ message: "Vui lòng nhập đầy đủ Họ tên, SĐT, và Mật khẩu!" });
-  }
-
-  if (!hasStrongPassword(matkhau)) {
-    return res.status(400).json({ message: "Mật khẩu phải có ít nhất 8 ký tự, gồm cả chữ và số!" });
-  }
-
-  if (!/^[0-9]{10,11}$/.test(sdt)) {
-    return res.status(400).json({ message: "Số điện thoại không hợp lệ! Vui lòng nhập lại." });
-  }
-
-  // Escape XSS cho hoten
-  const safeHoten = escapeHtml(hoten);
-
-  const checkSql = "SELECT idKH FROM KHACHHANG WHERE sdt = ?";
-  db.query(checkSql, [sdt], (err, results) => {
-    if (err) {
-      console.error("Lỗi khi kiểm tra số điện thoại:", err);
-      return res.status(500).json({ message: "Lỗi máy chủ khi kiểm tra số điện thoại!" });
-    }
-
-    if (results.length > 0) {
-      return res.status(400).json({ message: "Số điện thoại này đã được đăng ký!" });
-    }
-
-    db.getConnection((beginErr, connection) => {
-      if (beginErr) return res.status(500).json({ message: "Đăng ký thất bại!" });
-
-      connection.beginTransaction((txErr) => {
-        if (txErr) {
-          connection.release();
-          return res.status(500).json({ message: "Đăng ký thất bại!" });
-        }
-
-        const insertSql = `
-          INSERT INTO KHACHHANG (hoTen, sdt, matKhau, gioiTinh, ngayThangNamSinh, cccd, diaChi)
-          VALUES (?, ?, ?, NULL, NULL, NULL, NULL)
-        `;
-        const values = [safeHoten, sdt, hashPassword(matkhau)];
-        connection.query(insertSql, values, (err2, result) => {
-          if (err2) {
-            console.error("Lỗi khi thêm khách hàng:", err2);
-            return connection.rollback(() => {
-              connection.release();
-              res.status(500).json({ message: "Đăng ký thất bại!" });
-            });
-          }
-
-          const newCustomerId = result.insertId;
-          const insertHoSoSql = "INSERT INTO HOSOYTE (idKH) VALUES (?)";
-          connection.query(insertHoSoSql, [newCustomerId], (err3) => {
-            if (err3) {
-              console.error("Lỗi khi tạo hồ sơ y tế:", err3);
-              return connection.rollback(() => {
-                connection.release();
-                res.status(500).json({ message: "Đăng ký thất bại do không tạo được hồ sơ y tế!" });
-              });
-            }
-
-            connection.commit((commitErr) => {
-              if (commitErr) {
-                return connection.rollback(() => {
-                  connection.release();
-                  res.status(500).json({ message: "Đăng ký thất bại!" });
-                });
-              }
-              connection.release();
-              logActivity("ĐĂNG KÝ", `Khách hàng mới: ${safeHoten} (SĐT: ${sdt})`, newCustomerId);
-              res.json({ message: "Đăng ký thành công!" });
-            });
-          });
-        });
-      });
-    });
-  });
+const register = createRegisterService({
+    db,
+    hasStrongPassword,
+    escapeHtml,
+    hashPassword,
+    logActivity
 });
 
+app.post("/register", (req, res) => {
+    register(req.body, res);
+});
 
 // ================== API ĐĂNG NHẬP ==================
-app.post("/login", rateLimitLogin, (req, res) => {
-  const { sdt, matkhau } = req.body;
 
-  if (!sdt || !matkhau) {
-    return res.status(400).json({ message: "Vui lòng nhập số điện thoại và mật khẩu!" });
-  }
-  const errorMsg = "Số điện thoại hoặc mật khẩu không đúng!";
+// Chuyển truy vấn MySQL callback thành Promise
+function queryFirstRow(sql, params) {
+    return new Promise((resolve, reject) => {
+        db.query(sql, params, (err, rows) => {
+            if (err) {
+                return reject(err);
+            }
 
-  if (!/^[0-9]{10,11}$/.test(sdt)) {
-    req.recordFailedAttempt();
-    return res.status(401).json({ message: errorMsg });
-  }
-
-  // Kiểm tra admin trước
-  const sqlAdmin = "SELECT idQTV, sdtQTV, matKhauQTV FROM QUANTRIVIEN WHERE sdtQTV = ? LIMIT 1";
-  db.query(sqlAdmin, [sdt], (err, adminResults) => {
-    if (err) return res.status(500).json({ message: "Lỗi máy chủ!" });
-
-    if (adminResults.length > 0 && verifyPassword(matkhau, adminResults[0].matKhauQTV)) {
-      req.clearFailedAttempts();
-      const token = generateToken({ id: adminResults[0].idQTV, sdt: sdt, role: "admin" });
-      if (!isHashedPassword(adminResults[0].matKhauQTV)) {
-        upgradePasswordIfNeeded("QUANTRIVIEN", "matKhauQTV", "idQTV", adminResults[0].idQTV, matkhau);
-      }
-      logActivity("ĐĂNG NHẬP ADMIN", `Admin đăng nhập (SĐT: ${sdt})`, adminResults[0].idQTV);
-
-      return res.json({
-        message: "Đăng nhập thành công!",
-        isAdmin: true,
-        token: token,
-        admin: {
-          idQTV: adminResults[0].idQTV,
-          sdt: adminResults[0].sdtQTV,
-        },
-      });
-    }
-
-    // Nếu không phải admin, kiểm tra khách hàng
-    const sqlUser = "SELECT idKH, hoTen, sdt, matKhau FROM KHACHHANG WHERE sdt = ? LIMIT 1";
-    db.query(sqlUser, [sdt], (err2, userResults) => {
-      if (err2) return res.status(500).json({ message: "Lỗi máy chủ!" });
-
-      if (userResults.length === 0 || !verifyPassword(matkhau, userResults[0].matKhau)) {
-        req.recordFailedAttempt();
-        return res.status(401).json({ message: errorMsg });
-      }
-
-      req.clearFailedAttempts();
-      const token = generateToken({ id: userResults[0].idKH, sdt: sdt, role: "customer" });
-      if (!isHashedPassword(userResults[0].matKhau)) {
-        upgradePasswordIfNeeded("KHACHHANG", "matKhau", "idKH", userResults[0].idKH, matkhau);
-      }
-      logActivity("ĐĂNG NHẬP", `Khách hàng đăng nhập (SĐT: ${sdt})`, userResults[0].idKH);
-
-      res.json({
-        message: "Đăng nhập thành công!",
-        isAdmin: false,
-        token: token,
-        user: {
-          idKH: userResults[0].idKH,
-          hoTen: userResults[0].hoTen,
-          sdt: userResults[0].sdt,
-        },
-      });
+            resolve(rows[0] || null);
+        });
     });
-  });
+}
+
+// Kết nối logic đăng nhập với database thật
+const loginService = createLoginService({
+    findAdminByPhone: (sdt) => {
+        return queryFirstRow(
+            `SELECT idQTV, sdtQTV, matKhauQTV
+             FROM QUANTRIVIEN
+             WHERE sdtQTV = ?
+             LIMIT 1`,
+            [sdt]
+        );
+    },
+
+    findCustomerByPhone: (sdt) => {
+        return queryFirstRow(
+            `SELECT idKH, hoTen, sdt, matKhau
+             FROM KHACHHANG
+             WHERE sdt = ?
+             LIMIT 1`,
+            [sdt]
+        );
+    },
+
+    verifyPassword,
+    generateToken,
+    isHashedPassword,
+    upgradePasswordIfNeeded,
+    logActivity
+});
+
+// API đăng nhập
+app.post("/login", rateLimitLogin, async (req, res) => {
+    const result = await loginService(req.body, {
+        recordFailedAttempt: req.recordFailedAttempt,
+        clearFailedAttempts: req.clearFailedAttempts
+    });
+
+    return res
+        .status(result.status)
+        .json(result.body);
 });
 
 
